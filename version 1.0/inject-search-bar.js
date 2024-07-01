@@ -92,26 +92,29 @@
     }
 
     function injectSearchBar() {
-        const targetElement = document.querySelector('div.flex.flex-col.gap-2.pb-2.text-token-text-primary.text-sm.juice\\:mt-5');
-        if (!targetElement) {
-            console.log('Target element for injection not found');
+        const navContainer = document.evaluate('/html/body/div[1]/div[1]/div[1]/div/div/div/div/nav/div[2]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        if (!navContainer) {
+            console.log('Navigation container for injection not found');
             return;
         }
-
-        const searchBarContainer = document.createElement('div');
-        searchBarContainer.className = 'chatgpt-search-container';
-        searchBarContainer.innerHTML = `
-            <input type="text" id="chatgpt-search-input" placeholder="Search your chats...">
-            <div id="chatgpt-search-results" style="display: none;"></div>
-        `;
-
-        targetElement.parentNode.insertBefore(searchBarContainer, targetElement);
-
-        const searchInput = document.getElementById('chatgpt-search-input');
-        searchInput.addEventListener('input', debounce(performSearch, 300));
-
-        console.log('Search bar injected successfully');
+    
+        let searchBarContainer = document.querySelector('.chatgpt-search-container');
+        if (!searchBarContainer) {
+            searchBarContainer = document.createElement('div');
+            searchBarContainer.className = 'chatgpt-search-container';
+            searchBarContainer.innerHTML = `
+                <input type="text" id="chatgpt-search-input" placeholder="Search your chats...">
+                <div id="chatgpt-search-results" style="display: none;"></div>
+            `;
+            navContainer.parentNode.insertBefore(searchBarContainer, navContainer);
+            const searchInput = document.getElementById('chatgpt-search-input');
+            searchInput.addEventListener('input', debounce(performSearch, 300));
+    
+            console.log('Search bar injected successfully');
+        }
     }
+    
+    
 
     function scrapeChatTitles() {
         const chatItems = document.querySelectorAll('nav li');
