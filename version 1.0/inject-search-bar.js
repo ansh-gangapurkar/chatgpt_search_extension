@@ -93,12 +93,18 @@
     }
 
     function injectSearchBar() {
-        const navContainer = document.evaluate('/html/body/div[1]/div[1]/div[1]/div/div/div/div/nav/div[2]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-        if (!navContainer) {
-            console.log('Navigation container for injection not found');
+        const targetSelector = 'nav > div';
+        let targetElement = document.querySelector(targetSelector);
+    
+        if (!targetElement) {
+            console.log('Target element for injection not found. Waiting for DOM changes...');
             return;
         }
-
+    
+        if (targetElement.nextElementSibling) {
+            targetElement = targetElement.nextElementSibling;
+        }
+    
         let searchBarContainer = document.querySelector('.chatgpt-search-container');
         if (!searchBarContainer) {
             searchBarContainer = document.createElement('div');
@@ -107,11 +113,16 @@
                 <input type="text" id="chatgpt-search-input" placeholder="Search your chats...">
                 <div id="chatgpt-search-results" style="display: none;"></div>
             `;
-            navContainer.parentNode.insertBefore(searchBarContainer, navContainer);
+            
+            targetElement.parentNode.insertBefore(searchBarContainer, targetElement);
+    
             const searchInput = document.getElementById('chatgpt-search-input');
             searchInput.addEventListener('input', debouncedPerformSearch);
-
+    
             console.log('Search bar injected successfully');
+        } else {
+            targetElement.parentNode.insertBefore(searchBarContainer, targetElement);
+            console.log('Search bar repositioned');
         }
     }
 
@@ -296,46 +307,43 @@
     const debouncedPerformSearch = debounce(performSearch, 100);
 
     openDatabase().then(() => {
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                injectSearchBar();
-                scrapeChatTitles();
-            });
-        } else {
+        function initializeSearchBar() {
             injectSearchBar();
             scrapeChatTitles();
         }
-
+    
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeSearchBar);
+        } else {
+            initializeSearchBar();
+        }
+    
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
-                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                    if (!document.querySelector('.chatgpt-search-container')) {
-                        injectSearchBar();
+                if (mutation.type === 'childList') {
+                    const addedNodes = Array.from(mutation.addedNodes);
+                    const removedNodes = Array.from(mutation.removedNodes);
+    
+                    const sidebarChanged = addedNodes.concat(removedNodes).some(node => 
+                        node.nodeType === Node.ELEMENT_NODE && 
+                        (node.tagName === 'NAV' || node.querySelector('nav'))
+                    );
+    
+                    if (sidebarChanged) {
+                        console.log('Sidebar structure changed, reinitializing search bar');
+                        initializeSearchBar();
                     }
-                    scrapeChatTitles();
                 }
             });
         });
-
+    
         observer.observe(document.body, { childList: true, subtree: true });
-
+    
         window.addEventListener('scroll', debounce(scrapeChatTitles, 500));
-
+    
         console.log('Inject search bar script loaded with IndexedDB support');
     }).catch(error => {
         console.error('Failed to open database:', error);
-    });
-
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        if (message.action === "refreshDatabase") {
-            refreshDatabase().then(() => {
-                sendResponse({success: true});
-            }).catch((error) => {
-                console.error('Error in refreshDatabase:', error);
-                sendResponse({success: false, error: error.message});
-            });
-            return true; 
-        }
     });
 
 })();
