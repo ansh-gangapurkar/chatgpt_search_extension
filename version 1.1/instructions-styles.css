@@ -50,7 +50,7 @@ li {
   line-height: 1.4;
 }
 
-.about-link, .bug-report-link {
+.about-link, .bug-report-link, .github-link {
   display: inline-block;
   padding: 10px 16px;
   text-decoration: none;
@@ -78,4 +78,13 @@ li {
 
 .bug-report-link:hover {
   background-color: #e55a5a;
+}
+
+.github-link {
+  background-color: #2b3137; 
+  color: white;
+}
+
+.github-link:hover {
+  background-color: #24292e;
 }
