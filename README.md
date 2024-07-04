@@ -32,4 +32,4 @@ The extension interacts with the ChatGPT website to scrape and index chat titles
 
 ## Requirements
 
-To use this project, you will need to have a Chrome browser download the extension [here]([url](https://chromewebstore.google.com/detail/chatgpt-search-bar/hobnnbggfgajghdnhiiempklmhepijhg?authuser=4&hl=en)).
+To use this project, you will need to have a Chrome browser. Download the extension [here](https://chromewebstore.google.com/detail/chatgpt-search-bar/hobnnbggfgajghdnhiiempklmhepijhg?authuser=4&hl=en).
