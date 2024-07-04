@@ -1,12 +1,10 @@
 {
   "manifest_version": 3,
   "name": "ChatGPT Search Bar",
-  "version": "1.0",
-  "description": "A Chrome extension to search through ChatGPT chats using IndexedDB.",
+  "version": "1.1",
+  "description": "A Chrome extension to search through ChatGPT chats",
   "permissions": [
-    "activeTab",
-    "storage",
-    "webNavigation"
+    "storage"
   ],
   "host_permissions": [
     "https://chat.openai.com/*"
