@@ -9,18 +9,18 @@ The extension interacts with the ChatGPT website to scrape and index chat titles
 ## Project Structure
 
 - **Content Scripts**: 
-  - `inject-search-bar.js`: Injects a search bar into the ChatGPT website and manages the IndexedDB for storing chat data.
+  - `inject-search-bar.js`: Injects a search bar into the ChatGPT website and manages IndexedDB for storing chat data. It also scrapes chat titles and IDs from the ChatGPT website.
   - `content.js`: Handles messages from the extension popup for displaying search results.
 
 - **Background Scripts**:
-  - `background.js`: Initializes and manages the IndexedDB, and handles extension installation and updates.
+  - `background.js`: Initializes and manages IndexedDB, handles extension installation and updates, and processes messages related to database operations.
 
 - **Popup**:
   - `popup.html`: The user interface for the extension popup.
-  - `popup.js`: Handles user interactions within the popup, including refreshing the chat database.
+  - `popup.js`: Handles user interactions within the popup, including refreshing the chat database and performing search operations.
 
 - **Styles**:
-  - `styles.css`: Styles for the extension popup.
+  - `popup-styles.css`: Styles for the extension popup.
   - `injected-styles.css`: Styles for the injected search bar on the ChatGPT website.
   - `instructions-styles.css`: Styles for the instructions page.
 
@@ -32,4 +32,4 @@ The extension interacts with the ChatGPT website to scrape and index chat titles
 
 ## Requirements
 
-To use this project, you will need to have a Chrome browser download the extension here.
+To use this project, you will need to have a Chrome browser download the extension [here]([url](https://chromewebstore.google.com/detail/chatgpt-search-bar/hobnnbggfgajghdnhiiempklmhepijhg?authuser=4&hl=en)).
