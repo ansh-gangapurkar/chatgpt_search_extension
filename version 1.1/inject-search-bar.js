@@ -40,10 +40,18 @@
     }
 
     function injectSearchBar() {
-        const navContainer = document.evaluate('/html/body/div[1]/div[1]/div[1]/div/div/div/div/nav/div[2]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-        if (!navContainer) {
+        const targetSelector = 'nav > div';
+        let targetElement = document.querySelector(targetSelector);
+    
+        if (!targetElement) {
+            console.log('Target element for injection not found. Waiting for DOM changes...');
             return;
         }
+    
+        if (targetElement.nextElementSibling) {
+            targetElement = targetElement.nextElementSibling;
+        }
+    
         let searchBarContainer = document.querySelector('.chatgpt-search-container');
         if (!searchBarContainer) {
             searchBarContainer = document.createElement('div');
@@ -52,9 +60,16 @@
                 <input type="text" id="chatgpt-search-input" placeholder="Search your chats...">
                 <div id="chatgpt-search-results" style="display: none;"></div>
             `;
-            navContainer.parentNode.insertBefore(searchBarContainer, navContainer);
+            
+            targetElement.parentNode.insertBefore(searchBarContainer, targetElement);
+    
             const searchInput = document.getElementById('chatgpt-search-input');
             searchInput.addEventListener('input', debouncedPerformSearch);
+    
+            console.log('Search bar injected successfully');
+        } else {
+            targetElement.parentNode.insertBefore(searchBarContainer, targetElement);
+            console.log('Search bar repositioned');
         }
     }
 
